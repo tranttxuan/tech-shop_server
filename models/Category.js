@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const categorySchema = new Schema(
     {
-        name: { type: String, trim: true, require: 'Name is required' },
+        name: { type: String, trim: true, minlength: 3, maxlength: 32, required: 'Name is required' },
         slug: { type: String, unique: true, lowercase: true, index: true }
     },
     {

@@ -6,20 +6,20 @@ exports.createSub = (req, res) => {
 
     Sub.create({ name,parent, slug: slugify(name) })
         .then(sub => res.status(200).json(sub))
-        .catch(error => res.status(400).json({ message: error }))
+        .catch(error => res.status(400).json({ message: error.message }))
 }
 
 exports.listAllSub = (req, res) => {
     Sub.find({})
         .sort({ createdAt: -1 })
         .then(list => res.status(200).json(list))
-        .catch(error => res.status(400).json({ message: error }))
+        .catch(error => res.status(400).json({ message: error.message }))
 
 }
 exports.readSub = (req, res) => {
     Sub.findOne({ slug: req.params.slug })
         .then(category => res.status(200).json(category))
-        .catch(error => res.status(400).json({ message: error }))
+        .catch(error => res.status(400).json({ message: error.message }))
 }
 
 exports.updateSub = (req, res) => {
@@ -29,11 +29,11 @@ exports.updateSub = (req, res) => {
         { name, parent, slug: slugify(name) },
         { new: true })
         .then(updatedCat => res.status(200).json(updatedCat))
-        .catch(error => res.status(400).json({ message: error }))
+        .catch(error => res.status(400).json({ message: error.message }))
 }
 
 exports.deleteSub = (req, res) => {
     Sub.findOneAndDelete({ slug: req.params.slug })
         .then(response => res.status(200).json(response))
-        .catch(error => res.status(400).json({ message: error }))
+        .catch(error => res.status(400).json({ message: error.message }))
 }

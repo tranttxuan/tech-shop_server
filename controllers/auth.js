@@ -18,7 +18,7 @@ exports.createUpdateUser = (req, res) => {
                     image: picture
                 })
                     .then((newUser) => res.status(200).json(newUser))
-                    .catch(error => res.status(500).json({ message: error }))
+                    .catch(error => res.status(500).json({ message: error.message }))
             }
         })
         .catch(error => res.status(500).json({ message: error }))
@@ -27,6 +27,6 @@ exports.createUpdateUser = (req, res) => {
 exports.currentUser = (req, res) => {
     User.findOne({ email: req.user.email })
         .then((user) => res.status(200).json(user))
-        .catch(error => res.status(500).json({ message: error }))
+        .catch(error => res.status(500).json({ message: error.message }))
 
 }
