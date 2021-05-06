@@ -11,10 +11,10 @@ const productSchema = new Schema(
         subs: [{ type: Schema.Types.ObjectId, ref: 'Sub' }],
         quantity: { type: Number },
         sold: { type: Number, default: 0 },
-        images: [{type: String}],
+        images: [],
         shipping: { type: String, enum: ['Yes', 'No'] },
         color:{type:String, enum:['Black', 'Red', 'Blue', 'White', 'Brown','Silver']},
-        brand:{type:String, enum:['Apple', 'Samsung', 'Microsoft', 'Lenovo', 'ASUS']},
+        brand:{type:String, enum:['Apple', 'Samsung', 'Microsoft', 'Lenovo', 'ASUS', 'HP']},
         ratings:[{star:Number, postedBy:{ type: Schema.Types.ObjectId, ref: 'User' }}]
     },
     {
