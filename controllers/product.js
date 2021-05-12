@@ -44,3 +44,14 @@ exports.update = (req, res) => {
     .then((product) => res.status(200).json(product))
     .catch((err) => res.status(400).json({ message: err.message }));
 };
+
+exports.listProducts = (req, res) => {
+  const { sort, order, limit } = req.body;
+  Product.find({})
+  .populate("subs")
+  .populate("category")
+  .sort([[sort, order]])
+  .limit(limit)
+  .then((prod) => res.status(200).json(prod))
+  .catch((error) => res.status(400).json({ message: error.message }));
+}
