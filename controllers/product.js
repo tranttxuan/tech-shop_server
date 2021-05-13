@@ -17,7 +17,7 @@ exports.readAllProducts = (req, res) => {
     .populate("subs")
     .populate("category")
     .sort([["createdAt", "desc"]])
-    .then((prod) => res.status(200).json(prod))
+    .then((prods) => res.status(200).json(prods))
     .catch((error) => res.status(400).json({ message: error.message }));
 };
 
@@ -46,12 +46,24 @@ exports.update = (req, res) => {
 };
 
 exports.listProducts = (req, res) => {
-  const { sort, order, limit } = req.body;
+  const { sort, order, page } = req.body;
+  const currentPage = page || 1;
+  const perPage = 3;
+
   Product.find({})
+  .skip((currentPage - 1) * perPage)
   .populate("subs")
   .populate("category")
   .sort([[sort, order]])
-  .limit(limit)
-  .then((prod) => res.status(200).json(prod))
+  .limit(perPage)
+  .then((prods) => res.status(200).json(prods))
+  .catch((error) => res.status(400).json({ message: error.message }));
+};
+
+exports.productsCount = (req, res) => {
+  Product
+  .estimatedDocumentCount()
+  .then((count) => res.status(200).json(count))
   .catch((error) => res.status(400).json({ message: error.message }));
 }
+

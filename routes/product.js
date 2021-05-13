@@ -6,14 +6,18 @@ const {
   remove,
   readOneProduct,
   update,
-  listProducts
+  listProducts,
+  productsCount
 } = require("../controllers/product");
 const router = express.Router();
 
-router.post("/product", authCheck, adminCheck, create);
+router.get("/product/:slug", readOneProduct);
+router.get("/products/total", productsCount);
 router.get("/products/:count", readAllProducts);
 router.delete("/product/:slug", authCheck, adminCheck, remove);
-router.get("/product/:slug", readOneProduct);
+router.post("/product", authCheck, adminCheck, create);
 router.put("/product/:slug", authCheck, adminCheck, update);
-router.post("/products", listProducts)
+router.post("/products", listProducts);
+
+
 module.exports = router;
