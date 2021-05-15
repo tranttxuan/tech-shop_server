@@ -1,10 +1,11 @@
 const slugify = require("slugify");
+const Product = require("../models/Product");
 const Sub = require("../models/Sub");
 
 exports.createSub = (req, res) => {
     const { name, parent } = req.body;
 
-    Sub.create({ name,parent, slug: slugify(name) })
+    Sub.create({ name, parent, slug: slugify(name) })
         .then(sub => res.status(200).json(sub))
         .catch(error => res.status(400).json({ message: error.message }))
 }
@@ -18,7 +19,15 @@ exports.listAllSub = (req, res) => {
 }
 exports.readSub = (req, res) => {
     Sub.findOne({ slug: req.params.slug })
-        .then(category => res.status(200).json(category))
+        .then(sub => {
+            Product.find({ subs: sub })
+                .populate('category')
+                .then(products => {
+                    //category info and products in the same subcategory
+                    res.status(200).json({ sub, products });
+                })
+                .catch(error => res.status(400).json({ message: error.message }))
+        })
         .catch(error => res.status(400).json({ message: error.message }))
 }
 

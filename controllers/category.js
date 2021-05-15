@@ -1,6 +1,7 @@
 const Category = require("../models/Category");
 const slugify = require("slugify");
 const Sub = require("../models/Sub");
+const Product = require("../models/Product");
 
 
 exports.createCategory = (req, res) => {
@@ -20,7 +21,15 @@ exports.listAllCategory = (req, res) => {
 }
 exports.readCategory = (req, res) => {
     Category.findOne({ slug: req.params.slug })
-        .then(category => res.status(200).json(category))
+        .then(category => {
+            Product.find({ category })
+                .populate('category')
+                .then(products => {
+                    //category info and products in the same category
+                    res.status(200).json({ category, products });
+                })
+                .catch(error => res.status(400).json({ message: error.message }))
+        })
         .catch(error => res.status(400).json({ message: error.message }))
 }
 
