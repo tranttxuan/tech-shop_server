@@ -75,7 +75,7 @@ exports.productStar = async (req, res) => {
     //check if currently logged-in user has already added rating to this product
     let existingRatingObject = product.ratings.find(
         (rating) => rating.postedBy.toString() === user._id.toString()
-	);
+    );
     if (existingRatingObject === undefined) {
         //user has not yet added a rating
         Product.findByIdAndUpdate(
@@ -97,4 +97,21 @@ exports.productStar = async (req, res) => {
             .then((response) => res.status(200).json(response))
             .catch((error) => res.status(400).json({ message: error.message }));
     }
+};
+
+exports.listRelated = (req, res) => {
+    Product.findById(req.params.productId)
+        .then((product) => {
+            Product.find({
+                _id: { $ne: product._id },
+                category: product.category
+            })
+                .limit(3)
+                .populate("subs")
+                .populate("category")
+                .sort([["price", "desc"]])
+                .then((prods) => res.status(200).json(prods))
+                .catch((error) => res.status(400).json({ message: error.message }));
+        })
+        .catch((error) => res.status(400).json({ message: error.message }));
 };
