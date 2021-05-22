@@ -9,7 +9,8 @@ const {
   listProducts,
   productsCount,
   productStar,
-  listRelated
+  listRelated,
+  searchFilter
 } = require("../controllers/product");
 const router = express.Router();
 
@@ -20,9 +21,11 @@ router.delete("/product/:slug", authCheck, adminCheck, remove);
 router.post("/product", authCheck, adminCheck, create);
 router.put("/product/:slug", authCheck, adminCheck, update);
 router.post("/products", listProducts);
-
+// RATING
 router.put("/product/star/:productId", authCheck, productStar);
 
 router.get("/product/related/:productId", listRelated);
+// SEARCH 
+router.post("/search/filters", searchFilter)
 
 module.exports = router;
