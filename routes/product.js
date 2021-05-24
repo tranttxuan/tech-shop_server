@@ -27,5 +27,4 @@ router.put("/product/star/:productId", authCheck, productStar);
 router.get("/product/related/:productId", listRelated);
 // SEARCH 
 router.post("/search/filters", searchFilter)
-
 module.exports = router;
