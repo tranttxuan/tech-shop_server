@@ -1,8 +1,6 @@
 const express = require("express");
-const { } = require("../controllers/auth");
 const { listAllSub, readSub, createSub, updateSub, deleteSub } = require("../controllers/sub");
 const { authCheck, adminCheck } = require("../middlewares/auth");
-const { } = require("../models/User");
 const router = express.Router();
 
 router.get("/subs", listAllSub);

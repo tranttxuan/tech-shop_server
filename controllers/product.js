@@ -117,106 +117,99 @@ exports.listRelated = (req, res) => {
 };
 
 // SEARCH / FILTER 
-const handleQuery = (req, res, query) => {
-    Product
-        .find({ $text: { $search: query } })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-}
+/***** loading products based on only one filter: input searching or price or ... *****/
+// const handleQuery = (req, res, query) => {
+//     Product
+//         .find({ $text: { $search: query } })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// }
 
-const handlePrice = (req, res, price) => {
-    Product
-        .find({
-            price: {
-                $gte: price[0],
-                $lte: price[1]
-            }
-        })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handlePrice = (req, res, price) => {
+//     Product
+//         .find({
+//             price: {
+//                 $gte: price[0],
+//                 $lte: price[1]
+//             }
+//         })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleCategory = (req, res, category) => {
-    Product
-        .find({ category })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleCategory = (req, res, category) => {
+//     Product
+//         .find({ category })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleStart = (req, res, stars) => {
-    Product
-        .aggregate([
-            {
-                $project: {
-                    document: "$$ROOT",
-                    floorAverage: {
-                        $floor: { $avg: "$ratings.star" },
-                    }
-                }
-            },
-            { $match: { floorAverage: stars } }
-        ])
-        .then(response => {
-            Product.find({ _id: response })
-                .populate("subs", "_id name")
-                .populate("category", "_id name")
-                .populate("postedBy", "_id name")
-                .then((prods) => res.status(200).json(prods))
-                .catch((error) => res.status(400).json({ message: error.message }));
-        })
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleStar = (req, res, stars) => {
+//     Product
+//         .aggregate([
+//             {
+//                 $project: {
+//                     document: "$$ROOT",
+//                     floorAverage: {
+//                         $floor: { $avg: "$ratings.star" },
+//                     }
+//                 }
+//             },
+//             { $match: { floorAverage: stars } }
+//         ])
+//         .then(response => {
+//             Product.find({ _id: response })
+//                 .populate("subs", "_id name")
+//                 .populate("category", "_id name")
+//                 .populate("rating.postedBy", "_id name")
+//                 .then((prods) => res.status(200).json(prods))
+//                 .catch((error) => res.status(400).json({ message: error.message }));
+//         })
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleSub = (req, res, sub) => {
-    Product
-        .find({ subs: sub })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleSub = (req, res, sub) => {
+//     Product
+//         .find({ subs: sub })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleShipping = (req, res, shipping) => {
-    Product
-        .find({ shipping })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleShipping = (req, res, shipping) => {
+//     Product
+//         .find({ shipping })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleColor = (req, res, color) => {
-    Product
-        .find({ color })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleColor = (req, res, color) => {
+//     Product
+//         .find({ color })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-const handleBrand = (req, res, brand) => {
-    Product
-        .find({ brand })
-        .populate("subs", "_id name")
-        .populate("category", "_id name")
-        .populate("postedBy", "_id name")
-        .then((prods) => res.status(200).json(prods))
-        .catch((error) => res.status(400).json({ message: error.message }));
-};
+// const handleBrand = (req, res, brand) => {
+//     Product
+//         .find({ brand })
+//         .populate("subs", "_id name")
+//         .populate("category", "_id name")
+//         .then((prods) => res.status(200).json(prods))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// };
 
-/***** loading products based on only one filter *****/
 // exports.searchFilter = (req, res) => {
 //     const { query, price, category, stars, sub } = req.body;
 //     if (query) {
@@ -233,7 +226,7 @@ const handleBrand = (req, res, brand) => {
 //     }
 //     if (stars) {
 //         console.log('stars --->', stars)
-//         handleStart(req, res, stars)
+//         handleStar(req, res, stars)
 //     }
 //     if (sub) {
 //         console.log('sub --->', sub)
@@ -253,10 +246,10 @@ const handleBrand = (req, res, brand) => {
 //     }
 // }
 
-/***** loading products based on filters *****/
+/***** loading products based on combined filters *****/
 exports.searchFilter = (req, res) => {
     const request = req.body;
-
+    
     const minPrice = (request.price && request.price.length !== 0) ? request.price[0] : 0;
     const maxPrice = (request.price && request.price.length !== 0) ? request.price[1] : 0;
     const text = request.text && request.text;
