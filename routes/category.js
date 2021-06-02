@@ -1,8 +1,6 @@
 const express = require("express");
-const { } = require("../controllers/auth");
 const { createCategory, listAllCategory, readCategory, updateCategory, deleteCategory, getSubs } = require("../controllers/category");
 const { authCheck, adminCheck } = require("../middlewares/auth");
-const { } = require("../models/User");
 const router = express.Router();
 
 router.get("/categories", listAllCategory);

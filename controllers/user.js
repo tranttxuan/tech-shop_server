@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
+const Coupon = require("../models/Coupon");
 
 exports.userCart = async (req, res) => {
     const { cart } = req.body;
@@ -67,3 +68,22 @@ exports.saveAddress = (req, res) => {
         .then(response => res.status(200).json(response))
         .catch((error) => res.status(400).json({ message: error.message }))
 };
+
+exports.applyCouponToCart = (req, res) => {
+    Coupon.findOne(req.body)
+        .then(async (validCoupon) => {
+            if (validCoupon === null) {
+                return res.status(200).json({ err: 'Invalid coupn' })
+            }
+            const user = await User.findOne({ email: req.user.email });
+            const { products, cartTotal } = await Cart.findOne({ orderedBy: user._id })
+                .populate('products.product', '_id title price')
+            console.log({ cartTotal }, 'discount: ', validCoupon.discount)
+
+            const totalAfterDiscount = cartTotal(1 - validCoupon.discount / 100).toFixed(2)
+            Cart.findOneAndUpdate({ orderedBy: user._id }, { totalAfterDiscount }, { new: true })
+                .then(response => res.status(200).json(response))
+                .catch((error) => res.status(400).json({ message: error.message }))
+        })
+        .catch((error) => res.status(400).json({ message: error.message }))
+}
