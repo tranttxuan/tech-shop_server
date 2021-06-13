@@ -101,6 +101,19 @@ exports.createOrder = async (req, res) => {
             orderedBy: user._id
         })
         console.log(newOrder)
+
+        //decrement quantity, increment sold
+        let bulkOption = products.map(item => {
+            return {
+                updateOne: {
+                    filter: { _id: item.product._id },
+                    update: { $inc: { quantity: -item.count, sold: +item.count } }
+                }
+            }
+        })
+
+        let updateProduct = Product.bulkWrite(bulkOption, { new: true });
+
         return res.status(200).json(newOrder)
     } catch (error) {
         return res.status(400).json({ message: error.message })
