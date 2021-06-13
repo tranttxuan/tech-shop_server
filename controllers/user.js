@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const Coupon = require("../models/Coupon");
+const Order = require("../models/Order");
 
 exports.userCart = async (req, res) => {
     const { cart } = req.body;
@@ -70,7 +71,6 @@ exports.saveAddress = (req, res) => {
 };
 
 exports.applyCouponToCart = (req, res) => {
-
     Coupon.findOne(req.body)
         .then(async (validCoupon) => {
             if (validCoupon === null) {
@@ -88,4 +88,21 @@ exports.applyCouponToCart = (req, res) => {
                 .catch((error) => res.status(400).json({ message: error.message }))
         })
         .catch((error) => res.status(400).json({ message: error.message }))
+}
+
+exports.createOrder = async (req, res) => {
+    const { paymentIntent } = req.body.stripeResponse;
+    const user = await User.findOne({ email: req.user.email });
+    const { products } = await Cart.findOne({ orderedBy: user._id });
+    try {
+        const newOrder = await Order.create({
+            products,
+            paymentIntent,
+            orderedBy: user._id
+        })
+        console.log(newOrder)
+        return res.status(200).json(newOrder)
+    } catch (error) {
+        return res.status(400).json({ message: error.message })
+    }
 }
