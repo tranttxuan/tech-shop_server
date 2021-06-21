@@ -112,10 +112,23 @@ exports.createOrder = async (req, res) => {
             }
         })
 
-        let updateProduct = Product.bulkWrite(bulkOption, { new: true });
+        Product.bulkWrite(bulkOption, { new: true })
+            .then(response => console.log(response))
+            .catch((error) => console.log(error))
 
         return res.status(200).json(newOrder)
     } catch (error) {
         return res.status(400).json({ message: error.message })
     }
+};
+
+exports.orders = (req, res) => {
+    User.findOne({ email: req.user.email })
+        .then(user => {
+            Order.find({ orderedBy: user._id })
+                .populate('products.product')
+                .then(orders => res.status(200).json(orders))
+                .catch((error) => res.status(400).json({ message: error.message }));
+        })
+        .catch((error) => res.status(400).json({ message: error.message }))
 }
