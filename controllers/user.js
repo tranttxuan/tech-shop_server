@@ -131,4 +131,30 @@ exports.orders = (req, res) => {
                 .catch((error) => res.status(400).json({ message: error.message }));
         })
         .catch((error) => res.status(400).json({ message: error.message }))
-}
+};
+
+exports.addToWishlist = (req, res) => {
+    User.findOneAndUpdate(
+        { email: req.user.email },
+        { wishlist: req.body.productId },
+        { new: true })
+        .then(response => res.status(200).json(response))
+        .catch((error) => res.status(400).json({ message: error.message }))
+};
+
+exports.wishlist = (req, res) => {
+    User.findOne({ email: req.user.email })
+        .select('wishlist')
+        .populate('wishlist')
+        .then(response => res.status(200).json(response))
+        .catch((error) => res.status(400).json({ message: error.message }))
+};
+
+exports.removeFromWishlist = (req, res) => {
+    User.findOneAndUpdate(
+        { email: req.user.email },
+        { $pull: { wishlist: req.body.productId } },
+        { new: true })
+        .then(response => res.status(200).json(response))
+        .catch((error) => res.status(400).json({ message: error.message }))
+};
