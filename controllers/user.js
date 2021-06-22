@@ -136,7 +136,7 @@ exports.orders = (req, res) => {
 exports.addToWishlist = (req, res) => {
     User.findOneAndUpdate(
         { email: req.user.email },
-        { wishlist: req.body.productId },
+        { $addToSet: { wishlist: req.body.productId } },
         { new: true })
         .then(response => res.status(200).json(response))
         .catch((error) => res.status(400).json({ message: error.message }))
@@ -151,10 +151,16 @@ exports.wishlist = (req, res) => {
 };
 
 exports.removeFromWishlist = (req, res) => {
+    console.log(">>>>>>>")
     User.findOneAndUpdate(
         { email: req.user.email },
         { $pull: { wishlist: req.params.productId } },
         { new: true })
-        .then(response => res.status(200).json(response))
+        .select('wishlist')
+        .populate('wishlist')
+        .then(response => {
+            console.log(response)
+            res.status(200).json(response)
+        })
         .catch((error) => res.status(400).json({ message: error.message }))
 };
