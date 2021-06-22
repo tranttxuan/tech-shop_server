@@ -153,7 +153,7 @@ exports.wishlist = (req, res) => {
 exports.removeFromWishlist = (req, res) => {
     User.findOneAndUpdate(
         { email: req.user.email },
-        { $pull: { wishlist: req.body.productId } },
+        { $pull: { wishlist: req.params.productId } },
         { new: true })
         .then(response => res.status(200).json(response))
         .catch((error) => res.status(400).json({ message: error.message }))
