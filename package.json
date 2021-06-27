@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build-react": "echo ---- creating react build --- && cd ../client  && npm install && npm run build && cp -r ./build/* ../server/public/ && cd .."
   },
   "keywords": [],
   "author": "",
