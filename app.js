@@ -15,12 +15,6 @@ app.use(logger('dev'));
 app.use(express.json({limit: '200mb'}));
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
-
-//routes middleware
-readdirSync("./routes").map((route) =>
-    app.use("/api", require("./routes/"+route))
-)
-
 //deploy on Heroku
 if (process.env.NODE_ENV === "production") {
     app.use("*", (req, res, next) => {
@@ -28,6 +22,12 @@ if (process.env.NODE_ENV === "production") {
          res.sendFile(__dirname + "/public/index.html");
     });
 }
+
+//routes middleware
+readdirSync("./routes").map((route) =>
+    app.use("/api", require("./routes/"+route))
+)
+
 
 //port
 const port = process.env.PORT || 4000;
