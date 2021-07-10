@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 exports.createUpdateUser = (req, res) => {
     const { email, picture, name } = req.user;
-
+    console.log(">>>", req.user)
     User.findOneAndUpdate(
         { email },
         { name: email.split("@")[0], image: picture },
