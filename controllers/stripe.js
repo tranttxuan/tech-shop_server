@@ -9,7 +9,11 @@ exports.createPaymentIntent = async (req, res) => {
     // find user 
     const user = await User.findOne({ email: req.user.email });
     // get user cart total 
-    const { cartTotal, totalAfterDiscount } = await Cart.findOne({ orderedBy: user._id });
+    const userCart = await Cart.findOne({ orderedBy: user._id });
+    if (!userCart) {
+        return  res.status(200).json("No product in Cart");
+    };
+    const { cartTotal, totalAfterDiscount } = userCart
     let finalAmount = 0;
 
     if (couponApplied && totalAfterDiscount) {
@@ -29,6 +33,6 @@ exports.createPaymentIntent = async (req, res) => {
         clientSecret: paymentIntent.client_secret,
         cartTotal,
         totalAfterDiscount,
-        payable: finalAmount/100,
+        payable: finalAmount / 100,
     });
 }

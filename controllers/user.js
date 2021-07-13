@@ -45,6 +45,7 @@ exports.getCart = (req, res) => {
         .then(user => {
             Cart.findOne({ orderedBy: user._id })
                 .populate('products.product', '_id title price')
+                .populate('orderedBy', 'address')
                 .then(cart => res.status(200).json(cart))
                 .catch((error) => res.status(400).json({ message: error.message }));
         })
